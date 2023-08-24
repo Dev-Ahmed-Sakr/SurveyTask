@@ -1,0 +1,73 @@
+﻿@model SurveyTask.Models.Survey
+
+@{
+    ViewBag.Title = "Create Survey";
+}
+
+<h2>Create Survey</h2>
+
+@using (Html.BeginForm())
+{
+    <!-- Form to add a new survey -->
+    <div class="form-group">
+        @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <h3>Questions</h3>
+    <!-- Question input fields here -->
+
+    <button type="button" id="addQuestion" class="btn btn-primary">Add Another Question</button>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create" class="btn btn-default" />
+        </div>
+    </div>
+}
+
+<!-- List of previous surveys -->
+<h2>Previous Surveys</h2>
+<ul>
+    @foreach (var survey in ViewBag.Surveys)
+    {
+        <li>@survey.Title</li>
+    }
+</ul>
+
+<div>
+    @if (ViewBag.HasPreviousPage)
+    {
+        @Html.ActionLink("<< Previous", "Create", new { page = ViewBag.CurrentPage - 1 })
+    }
+
+    @if (ViewBag.HasNextPage)
+    {
+        @Html.ActionLink("Next >>", "Create", new { page = ViewBag.CurrentPage + 1 })
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#addQuestion").click(function () {
+                var questionIndex = $("#questionsContainer").children().length;
+
+                var questionHtml = `
+                    <div class="form-group">
+                        <label class="control-label">Question ${questionIndex}</label>
+                        <input type="text" name="Questions[${questionIndex}].Text" class="form-control" />
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="Questions[${questionIndex}].IsTrueFalse" /> True/False
+                            </label>
+                        </div>
+                    </div>`;
+
+                $("#questionsContainer").append(questionHtml);
+            });
+        });
+    </script>
+}
