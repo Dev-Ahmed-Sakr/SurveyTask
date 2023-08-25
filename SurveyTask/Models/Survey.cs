@@ -10,10 +10,12 @@ namespace SurveyTask.Models
         public Survey() 
         { 
            CreatedDate = DateTime.Now;
+            Questions = new List<Question>();
         }
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Title { get; set; }
         public DateTime CreatedDate { get; set; }
+        public bool IsSubmitted { get; set; }
         public ICollection<Question> Questions { get; set; }
     }
 

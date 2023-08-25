@@ -10,15 +10,16 @@
 {
     <h3>Questions</h3>
     <div id="questionsContainer">
-        @foreach (var item in Model.Questions.ToList())
+        @foreach (var question in Model.Questions.ToList())
         {
             <div class="form-group">
                 <label class="control-label">Question</label>
-                @Html.HiddenFor(model => item.Id)
-                @Html.DisplayFor(model => item.Text)
+                @Html.HiddenFor(model => question.Id)
+                @Html.DisplayFor(model => question.Text)
             </div>
             <div>
-                @Html.TextAreaFor(model => item.AnswerText, new { @class = "form-control" })
+                @Html.TextAreaFor(model => question.AnswerText, new { @class = "form-control" })
+                <span id="answerTextValidation@(question.Id)" class="text-danger"></span>
             </div>
         }
     </div>
@@ -37,21 +38,17 @@
             $('#btnSubmitAnswers').click((event) => {
                 debugger;
                 var hasError = false;
-                $("input[type='text'][name^='Questions']").each(function () {
-                    if ($(this).val().trim() === "") {
+                $("textarea[id^='answerText']").each(function (index) {
+                    var answerText = $(this).val().trim();
+                    var questionId = $(this).attr("id").replace("answerText", "");
+
+                    if (answerText == '') {
+                        $("#answerTextValidation" + questionId).text("Answer is required.");
                         hasError = true;
-                        var fieldName = $(this).attr("name");
-                        $("span[data-valmsg-for='" + fieldName + "']").text("Question text is required.");
+                    } else {
+                        $("#answerTextValidation" + questionId).text("");
                     }
                 });
-
-                if ($('#Title').val() == '') {
-                    $('#Title').addClass('has-error');
-                    $("span[data-valmsg-for='Title']").text("Survey Title text is required.");
-                    hasError = true;
-                }
-                else
-                    $('#Title').removeClass('has-error');
 
                 if (hasError) { event.preventDefault(); return; }
 

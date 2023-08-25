@@ -1,0 +1,101 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\ 
+for details on configuring this project to bundle and minify static web assets. */
+body {
+/*    padding-top: 50px;
+    padding-bottom: 20px;*/
+}
+
+/* Wrapping element */
+/* Set some basic padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Carousel */
+.carousel-caption p {
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+/* Make .svg files in the carousel display properly in older browsers */
+.carousel-inner .item img[src$=".svg"] {
+    width: 100%;
+}
+
+/* QR code generator */
+#qrCode {
+    margin: 15px;
+}
+
+/* Hide/rearrange for smaller screens */
+@media screen and (max-width: 767px) {
+    /* Hide captions */
+    .carousel-caption {
+        display: none;
+    }
+}
+.form-control:focus {
+     box-shadow: 0 0 0 0; 
+}
+.campaigntyps:hover {
+    background-color: #00bcd4;
+}
+#newcampaign{
+    display:none;
+}
+.nav-tabs-title {
+    transition-duration: 0.2s;
+    margin-right: 7px;
+    padding: 14px 5px;
+    color: #000000;
+}
+.nav-tabs-title.active {
+    background-color: #03bbd3;
+    color: #ffffff;
+}
+.nav-tabs-title:hover {
+    background-color: #03bbd3;
+    padding: 22px 5px;
+    border-radius: 5px;
+    color: #ffffff;
+}
+.manage-camp-card {
+    background-color: #99999975;
+    margin: 10px 0px;
+    border-radius: 5px;
+}
+
+.just-padding {
+    padding: 15px;
+}
+
+.list-group.list-group-root {
+    padding: 0;
+    overflow: hidden;
+}
+
+    .list-group.list-group-root .list-group {
+        margin-bottom: 0;
+    }
+
+    .list-group.list-group-root .list-group-item {
+        border-radius: 0;
+        border-width: 1px 0 0 0;
+    }
+
+    .list-group.list-group-root > .list-group-item:first-child {
+        border-top-width: 0;
+    }
+
+    .list-group.list-group-root > .list-group > .list-group-item {
+        padding-left: 30px;
+    }
+
+    .list-group.list-group-root > .list-group > .list-group > .list-group-item {
+        padding-left: 45px;
+    }
+
+.list-group-item .glyphicon {
+    margin-right: 5px;
+}

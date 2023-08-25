@@ -1,4 +1,4 @@
-﻿@model SurveyTask.Models.Survey
+﻿@model SurveyTask.Models.SurveyViewModel
 
 @{
     ViewBag.Title = "Edit Survey";
@@ -49,11 +49,6 @@
                         <label class="control-label">Question ${questionIndex}</label>
                         <input type="text" name="Questions[${questionIndex}].Text" class="form-control" required />
                         <span class="text-danger" data-valmsg-for="Questions[${questionIndex}].Text"></span>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" name="Questions[${questionIndex}].IsTrueFalse" /> True/False
-                            </label>
-                        </div>
                     </div>`;
 
                 $("#questionsContainer").append(questionHtml);

@@ -1,0 +1,23 @@
+﻿@model List<SurveyTask.Models.Survey>
+
+<h2>User-Submitted Surveys</h2>
+
+<ul>
+    @foreach (var survey in Model)
+    {
+        <li>
+            @Html.ActionLink(survey.Title, "ViewSubmittedSurvey", new { id = survey.Id })
+        </li>
+    }
+</ul>
+<div>
+    @if (ViewBag.HasPreviousPage != null && ViewBag.HasPreviousPage)
+    {
+        @Html.ActionLink("<< Previous", "UserSubmittedSurveys", new { page = ViewBag.CurrentPage - 1 })
+    }
+
+    @if (ViewBag.HasNextPage != null && ViewBag.HasNextPage)
+    {
+        @Html.ActionLink("Next >>", "UserSubmittedSurveys", new { page = ViewBag.CurrentPage + 1 })
+    }
+</div>

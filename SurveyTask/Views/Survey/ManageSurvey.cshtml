@@ -1,0 +1,219 @@
+﻿@model SurveyTask.Models.Survey
+
+@{
+    ViewBag.Title = "Create Survey";
+}
+
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "ManageSurveyForm" }))
+{
+    <div class="panel-primary panel">
+        <div class="panel-heading">
+            <span class="panel-title"><i class="fa fa-cogs"></i> <b> Create Survey</b></span>
+        </div>
+        <div class="panel-body">
+            @if (ViewBag.Success != null)
+            {
+                if ((bool)ViewBag.Success == true)
+                {
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+
+                            <div id="DV_Alert" class="alert alert-success  alert-dismissable">
+                                <span id="DV_AlertClose" class="close" data-dissmiss="alert" aria-label="close">x</span>
+                                <strong>Status: </strong><br />
+                                <ul>
+                                    <li>Data Saved successfully</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12">
+
+                            <div id="DV_Alert" class="alert alert-danger  alert-dismissable">
+                                <span id="DV_AlertClose" class="close" data-dissmiss="alert" aria-label="close">x</span>
+                                <strong>Status: </strong><br />
+                                <ul>
+                                    <li>Failed to Save Data</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        @Html.Label("Survey Title", htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-lg-7 col-md-7 col-sm-7 ">
+                        @Html.EditorFor(model => model.Title, new { @class = "form-control" })
+                        <span class="text-danger" data-valmsg-for="Title"></span>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4 ">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <h3>Questions</h3>
+                    <div id="questionsContainer">
+                        <!-- Question input fields will be added here dynamically -->
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3">
+                        <button type="button" id="addQuestion" class="btn btn-primary">Add Another Question</button>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="form-group pull-right">
+                        <button hidden id="btnCreate" class="btn btn-primary"><i class="fa fa-save"></i> Create Survey</button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <i class="fa fa-line-chart"></i> Previous Surveys
+                    </h4>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Questions Count</th>
+                            <th>Survey Creation Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var survey in ViewBag.Surveys)
+                        {
+                            <tr>
+                                <td>@survey.Title</td>
+                                <td>@survey.Questions.Count</td>
+                                <td>@survey.CreatedDate</td>
+                                <td>
+                                    @Html.ActionLink("View", "ViewSurvey", new { id = survey.Id }, new { @class = "btn btn-primary btn-sm" })
+                                    @Html.ActionLink("Edit", "EditSurvey", new { id = survey.Id }, new { @class = "btn btn-warning btn-sm" })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                @if (ViewBag.HasPreviousPage != null && ViewBag.HasPreviousPage)
+                {
+                    @Html.ActionLink("<< Previous", "ManageSurvey", new { page = ViewBag.CurrentPage - 1 })
+                }
+
+                @if (ViewBag.HasNextPage != null && ViewBag.HasNextPage)
+                {
+                    @Html.ActionLink("Next >>", "ManageSurvey", new { page = ViewBag.CurrentPage + 1 })
+                }
+            </div>
+        </div>
+    </div>
+}
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var questionIndex = 0;
+
+            $("#addQuestion").click(function () {
+                document.getElementById("btnCreate").hidden = false;
+                var questionHtml = `
+                         <div class="form-group">
+                             <label class="control-label">Question ${questionIndex}</label>
+                             <input type="text" id= ${questionIndex} name="Questions[${questionIndex}].Text" class="form-control" required />
+                             <span class="text-danger" data-valmsg-for="Questions[${questionIndex}].Text"></span>
+                         </div>`;
+
+                $("#questionsContainer").append(questionHtml);
+                questionIndex++;
+            });
+
+            //$("form").submit(function () {
+            //    var isValid = true;
+            //    $("input[type='text'][name^='Questions']").each(function () {
+            //        if ($(this).val().trim() === "") {
+            //            isValid = false;
+            //            var fieldName = $(this).attr("name");
+            //            $("span[data-valmsg-for='" + fieldName + "']").text("Question text is required.");
+            //        }
+            //    });
+
+            //    return isValid;
+            //});
+
+            $('#btnCreate').click((event) => {
+                debugger;
+                event.preventDefault();
+                var hasError = false;
+                $("input[type='text'][name^='Questions']").each(function () {
+                    if ($(this).val().trim() === "") {
+                        hasError = true;
+                        var fieldName = $(this).attr("name");
+                        $("span[data-valmsg-for='" + fieldName + "']").text("Question text is required.");
+                    }
+                });
+
+                if ($('#Title').val() == '') {
+                    $('#Title').addClass('has-error');
+                    $("span[data-valmsg-for='Title']").text("Survey Title text is required.");
+                    hasError = true;
+                }
+                else
+                    $('#Title').removeClass('has-error');
+
+                if (hasError) { return; }
+                var surveyData = {
+                    Title: $("#Title").val(),
+                    Questions: []  // Initialize an empty array
+                };
+
+                $("input[type='text'][name^='Questions']").each(function () {
+                    var fieldName = $(this).attr("id");
+                    var questionText = $('#'+fieldName).val();
+
+                    var question = {
+                        Text: questionText,
+                    };
+                    surveyData.Questions.push(question);
+                });
+
+                var formData = {
+                    surveyModelJson: JSON.stringify(surveyData)
+                };
+
+                //var formData = $("#ManageSurveyForm").serialize();
+
+                $.ajax({
+                    url: '/Survey/ManageSurvey',
+                    type: 'post',
+                    data: formData,
+                    async: false,
+                    success: (template) => {
+                        // debugger;
+                    }
+                });
+            });
+        });
+
+
+    </script>
+}

@@ -19,7 +19,7 @@ namespace SurveyTask.Controllers
             return View(surveys);
         }
 
-        public ActionResult AnswerSurvey(int id)
+        public ActionResult AnswerSurvey(Guid id)
         {
             var survey = _context.Surveys.Include("Questions").SingleOrDefault(s => s.Id == id);
             if (survey == null)

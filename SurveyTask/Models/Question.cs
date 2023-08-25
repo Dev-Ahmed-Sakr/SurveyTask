@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -9,7 +10,7 @@ namespace SurveyTask.Models
     {
         public int Id { get; set; }
         public string Text { get; set; }
-        public int SurveyId { get; set; } // Foreign key to Survey
+        public Guid SurveyId { get; set; } // Foreign key to Survey
         public Survey Survey { get; set; }
         public string AnswerText { get; set; }
 

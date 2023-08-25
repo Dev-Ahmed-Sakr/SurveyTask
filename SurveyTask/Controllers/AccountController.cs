@@ -85,11 +85,11 @@ namespace SurveyTask.Controllers
 
                         if (roles.Contains("Admin"))
                         {
-                            return RedirectToAction("Index", "Survey");
+                            return RedirectToAction("ManageSurvey", "Survey");
                         }
                         else
                         {
-                            return RedirectToAction("UserDashboard", "Home");
+                            return RedirectToAction("UserDashboard", "UserSurveys");
                         }
 
                     }
