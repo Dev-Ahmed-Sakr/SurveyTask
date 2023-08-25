@@ -4,70 +4,164 @@
     ViewBag.Title = "Create Survey";
 }
 
-<h2>Create Survey</h2>
 
 @using (Html.BeginForm())
 {
-    <!-- Form to add a new survey -->
-    <div class="form-group">
-        @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+    <div class="panel-primary panel">
+        <div class="panel-heading">
+            <span class="panel-title"><i class="fa fa-cogs"></i> <b> Create Survey</b></span>
         </div>
-    </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        @Html.Label("Survey Title", htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-lg-7 col-md-7 col-sm-7 ">
+                        @Html.EditorFor(model => model.Title, new { @class = "form-control" })
+                        <span class="text-danger" data-valmsg-for="Title"></span>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4 ">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <h3>Questions</h3>
+                    <div id="questionsContainer">
+                        <!-- Question input fields will be added here dynamically -->
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3">
+                        <button type="button" id="addQuestion" class="btn btn-primary">Add Another Question</button>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="form-group pull-right">
+                        <button hidden id="btnCreate" class="btn btn-primary"><i class="fa fa-save"></i> Create Survey</button>
+                    </div>
+                </div>
+            </div>
 
-    <h3>Questions</h3>
-    <!-- Question input fields here -->
 
-    <button type="button" id="addQuestion" class="btn btn-primary">Add Another Question</button>
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                          <i class="fa fa-line-chart"></i> Previous Surveys
+                    </h4>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Questions Count</th>
+                            <th>Survey Creation Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var survey in ViewBag.Surveys)
+                        {
+                            <tr>
+                                <td>@survey.Title</td>
+                                <td>@survey.Questions.Count</td>
+                                <td>@survey.CreatedDate</td>
+                                <td>
+                                    @Html.ActionLink("View", "ViewSurvey", new { id = survey.Id }, new { @class = "btn btn-primary btn-sm" })
+                                    @Html.ActionLink("Edit", "EditSurvey", new { id = survey.Id }, new { @class = "btn btn-warning btn-sm" })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                @if (ViewBag.HasPreviousPage != null && ViewBag.HasPreviousPage)
+                {
+                    @Html.ActionLink("<< Previous", "Create", new { page = ViewBag.CurrentPage - 1 })
+                }
 
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Create" class="btn btn-default" />
+                @if (ViewBag.HasNextPage != null && ViewBag.HasNextPage)
+                {
+                    @Html.ActionLink("Next >>", "Create", new { page = ViewBag.CurrentPage + 1 })
+                }
+            </div>
         </div>
     </div>
 }
-
-<!-- List of previous surveys -->
-<h2>Previous Surveys</h2>
-<ul>
-    @foreach (var survey in ViewBag.Surveys)
-    {
-        <li>@survey.Title</li>
-    }
-</ul>
-
-<div>
-    @if (ViewBag.HasPreviousPage)
-    {
-        @Html.ActionLink("<< Previous", "Create", new { page = ViewBag.CurrentPage - 1 })
-    }
-
-    @if (ViewBag.HasNextPage)
-    {
-        @Html.ActionLink("Next >>", "Create", new { page = ViewBag.CurrentPage + 1 })
-    }
-</div>
-
 @section Scripts {
     <script>
         $(document).ready(function () {
-            $("#addQuestion").click(function () {
-                var questionIndex = $("#questionsContainer").children().length;
+            var questionIndex = 0;
 
+            $("#addQuestion").click(function () {
+                document.getElementById("btnCreate").hidden = false;
                 var questionHtml = `
-                    <div class="form-group">
-                        <label class="control-label">Question ${questionIndex}</label>
-                        <input type="text" name="Questions[${questionIndex}].Text" class="form-control" />
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" name="Questions[${questionIndex}].IsTrueFalse" /> True/False
-                            </label>
-                        </div>
-                    </div>`;
+                         <div class="form-group">
+                             <label class="control-label">Question ${questionIndex}</label>
+                             <input type="text" name="Questions[${questionIndex}].Text" class="form-control" required />
+                             <span class="text-danger" data-valmsg-for="Questions[${questionIndex}].Text"></span>
+                         </div>`;
 
                 $("#questionsContainer").append(questionHtml);
+                questionIndex++;
+            });
+
+            //$("form").submit(function () {
+            //    var isValid = true;
+            //    $("input[type='text'][name^='Questions']").each(function () {
+            //        if ($(this).val().trim() === "") {
+            //            isValid = false;
+            //            var fieldName = $(this).attr("name");
+            //            $("span[data-valmsg-for='" + fieldName + "']").text("Question text is required.");
+            //        }
+            //    });
+
+            //    return isValid;
+            //});
+
+            $('#btnCreate').click((event) => {
+                debugger;
+                var hasError = false;
+                $("input[type='text'][name^='Questions']").each(function () {
+                    if ($(this).val().trim() === "") {
+                        hasError = true;
+                        var fieldName = $(this).attr("name");
+                        $("span[data-valmsg-for='" + fieldName + "']").text("Question text is required.");
+                    }
+                });
+
+                if ($('#Title').val() == '') {
+                    $('#Title').addClass('has-error');
+                    $("span[data-valmsg-for='Title']").text("Survey Title text is required.");
+                    hasError = true;
+                }
+                else
+                    $('#Title').removeClass('has-error');
+
+                if (hasError) { event.preventDefault(); return; }
+
+                let data = { Model };
+
+                $.ajax({
+                    url: '/Survey/Create',
+                    type: 'post',
+                    data,
+                    async: false,
+                    success: (template) => {
+                        // debugger;
+                    }
+                });
             });
         });
+
+
     </script>
 }

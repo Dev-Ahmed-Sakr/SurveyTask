@@ -1,0 +1,74 @@
+﻿@model SurveyTask.Models.Survey
+
+@{
+    ViewBag.Title = "Answer Survey";
+}
+
+<h2>@Model.Title</h2>
+
+@using (Html.BeginForm())
+{
+    <h3>Questions</h3>
+    <div id="questionsContainer">
+        @foreach (var item in Model.Questions.ToList())
+        {
+            <div class="form-group">
+                <label class="control-label">Question</label>
+                @Html.HiddenFor(model => item.Id)
+                @Html.DisplayFor(model => item.Text)
+            </div>
+            <div>
+                @Html.TextAreaFor(model => item.AnswerText, new { @class = "form-control" })
+            </div>
+        }
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button id="btnSubmitAnswers" class="btn btn-primary"><i class="fa fa-save"></i> Create Survey</button>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            $('#btnSubmitAnswers').click((event) => {
+                debugger;
+                var hasError = false;
+                $("input[type='text'][name^='Questions']").each(function () {
+                    if ($(this).val().trim() === "") {
+                        hasError = true;
+                        var fieldName = $(this).attr("name");
+                        $("span[data-valmsg-for='" + fieldName + "']").text("Question text is required.");
+                    }
+                });
+
+                if ($('#Title').val() == '') {
+                    $('#Title').addClass('has-error');
+                    $("span[data-valmsg-for='Title']").text("Survey Title text is required.");
+                    hasError = true;
+                }
+                else
+                    $('#Title').removeClass('has-error');
+
+                if (hasError) { event.preventDefault(); return; }
+
+                let data = { Model };
+
+                $.ajax({
+                    url: '/Survey/Create',
+                    type: 'post',
+                    data,
+                    async: false,
+                    success: (template) => {
+                        // debugger;
+                    }
+                });
+            });
+        });
+
+
+    </script>
+}

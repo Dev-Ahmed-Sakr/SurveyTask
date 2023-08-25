@@ -1,0 +1,77 @@
+﻿@model SurveyTask.Models.Survey
+
+@{
+    ViewBag.Title = "Edit Survey";
+}
+
+<h2>Edit Survey</h2>
+
+@using (Html.BeginForm())
+{
+    <div class="form-group">
+        @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+
+    <h3>Edit Questions</h3>
+    <div id="questionsContainer">
+        @for (int i = 0; i < Model.Questions.Count; i++)
+        {
+            <div class="form-group">
+                <label class="control-label">Question @i</label>
+                @Html.TextBoxFor(model => model.Questions.ToList()[i].Text, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Questions.ToList()[i].Text, "", new { @class = "text-danger" })
+
+            </div>
+        }
+    </div>
+
+    <button type="button" id="addQuestion" class="btn btn-primary">Add Another Question</button>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save Changes" class="btn btn-default" />
+            @Html.ActionLink("Cancel", "ViewSurvey", new { id = Model.Id }, new { @class = "btn btn-danger" })
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var questionIndex = 0;
+
+            $("#addQuestion").click(function () {
+                var questionHtml = `
+                    <div class="form-group">
+                        <label class="control-label">Question ${questionIndex}</label>
+                        <input type="text" name="Questions[${questionIndex}].Text" class="form-control" required />
+                        <span class="text-danger" data-valmsg-for="Questions[${questionIndex}].Text"></span>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="Questions[${questionIndex}].IsTrueFalse" /> True/False
+                            </label>
+                        </div>
+                    </div>`;
+
+                $("#questionsContainer").append(questionHtml);
+                questionIndex++;
+            });
+
+            $("form").submit(function () {
+                var isValid = true;
+                $("input[type='text'][name^='Questions']").each(function () {
+                    if ($(this).val().trim() === "") {
+                        isValid = false;
+                        var fieldName = $(this).attr("name");
+                        $("span[data-valmsg-for='" + fieldName + "']").text("Question text is required.");
+                    }
+                });
+
+                return isValid;
+            });
+        });
+    </script>
+}

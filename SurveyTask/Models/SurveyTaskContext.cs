@@ -12,6 +12,17 @@ namespace SurveyTask.Models
         {
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
             base.OnModelCreating(modelBuilder);
+
+            // Configure relationships
+            modelBuilder.Entity<Question>()
+                .HasRequired(q => q.Survey)
+                .WithMany(s => s.Questions)
+                .HasForeignKey(q => q.SurveyId);
+
+            modelBuilder.Entity<Answer>()
+                .HasRequired(a => a.Question)
+                .WithMany(q => q.Answers)
+                .HasForeignKey(a => a.QuestionId);
         }
 
         public static SurveyTaskContext Create()
@@ -21,5 +32,6 @@ namespace SurveyTask.Models
         public DbSet<Survey> Surveys { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<Answer> Answers { get; set; }
+
     }
 }

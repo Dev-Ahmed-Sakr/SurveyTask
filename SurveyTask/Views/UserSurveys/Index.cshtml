@@ -1,0 +1,16 @@
+﻿@model List<SurveyTask.Models.Survey>
+
+@{
+    ViewBag.Title = "My Surveys";
+}
+
+<h2>My Surveys</h2>
+
+<ul>
+    @foreach (var survey in Model)
+    {
+        <li>
+            @Html.ActionLink(survey.Title, "AnswerSurvey", new { id = survey.Id }, new { @class = "btn btn-primary btn-sm" })
+        </li>
+    }
+</ul>

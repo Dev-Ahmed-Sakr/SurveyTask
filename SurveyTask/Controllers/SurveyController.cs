@@ -6,16 +6,7 @@ using SurveyTask.Models;
 
 public class SurveyController : Controller
 {
-    private SurveyTaskContext _context; // Your database context
-
-    public SurveyController()
-    {
-        
-    }
-    public SurveyController(SurveyTaskContext context)
-    {
-        _context = context;
-    }
+    private SurveyTaskContext _context = new SurveyTaskContext(); // Your database context
 
     public ActionResult Index(int? page)
     {
@@ -27,7 +18,7 @@ public class SurveyController : Controller
     }
     public ActionResult Create(int page = 1, int pageSize = 10)
     {
-        var surveys = _context.Surveys.OrderByDescending(s => s.Id)
+        var surveys = _context.Surveys.Include("Questions").OrderByDescending(s => s.Id)
                              .Skip((page - 1) * pageSize)
                              .Take(pageSize)
                              .ToList();
@@ -56,5 +47,25 @@ public class SurveyController : Controller
         // If the model state is not valid, return the view with validation errors
         return View(survey);
     }
+    public ActionResult ViewSurvey(int id)
+    {
+        var survey = _context.Surveys.Include("Questions").SingleOrDefault(s => s.Id == id);
+        if (survey == null)
+        {
+            return HttpNotFound();
+        }
 
+        return View(survey);
+    }
+
+    public ActionResult EditSurvey(int id)
+    {
+        var survey = _context.Surveys.Include("Questions").SingleOrDefault(s => s.Id == id);
+        if (survey == null)
+        {
+            return HttpNotFound();
+        }
+
+        return View(survey);
+    }
 }

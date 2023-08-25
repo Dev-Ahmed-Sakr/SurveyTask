@@ -178,6 +178,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\SurveyController.cs" />
+    <Compile Include="Controllers\UserSurveysController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -189,10 +190,29 @@
     <Compile Include="Migrations\202308231847255_AddQuestionType.designer.cs">
       <DependentUpon>202308231847255_AddQuestionType.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202308241856329_updateinDB.cs" />
+    <Compile Include="Migrations\202308241856329_updateinDB.designer.cs">
+      <DependentUpon>202308241856329_updateinDB.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202308242014309_updateinDB2.cs" />
+    <Compile Include="Migrations\202308242014309_updateinDB2.designer.cs">
+      <DependentUpon>202308242014309_updateinDB2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202308250736486_updateinDB3.cs" />
+    <Compile Include="Migrations\202308250736486_updateinDB3.designer.cs">
+      <DependentUpon>202308250736486_updateinDB3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202308250807252_updateinDB4.cs" />
+    <Compile Include="Migrations\202308250807252_updateinDB4.designer.cs">
+      <DependentUpon>202308250807252_updateinDB4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202308250825317_updateinDB5.cs" />
+    <Compile Include="Migrations\202308250825317_updateinDB5.designer.cs">
+      <DependentUpon>202308250825317_updateinDB5.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Answer.cs" />
-    <Compile Include="Models\QuestionType.cs" />
     <Compile Include="Models\SurveyTaskContext.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -275,6 +295,10 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Survey\Index.cshtml" />
     <Content Include="Views\Survey\Create.cshtml" />
+    <Content Include="Views\Survey\ViewSurvey.cshtml" />
+    <Content Include="Views\Survey\EditSurvey.cshtml" />
+    <Content Include="Views\UserSurveys\Index.cshtml" />
+    <Content Include="Views\UserSurveys\AnswerSurvey.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -318,6 +342,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202308231847255_AddQuestionType.resx">
       <DependentUpon>202308231847255_AddQuestionType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202308241856329_updateinDB.resx">
+      <DependentUpon>202308241856329_updateinDB.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202308242014309_updateinDB2.resx">
+      <DependentUpon>202308242014309_updateinDB2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202308250736486_updateinDB3.resx">
+      <DependentUpon>202308250736486_updateinDB3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202308250807252_updateinDB4.resx">
+      <DependentUpon>202308250807252_updateinDB4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202308250825317_updateinDB5.resx">
+      <DependentUpon>202308250825317_updateinDB5.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

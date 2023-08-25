@@ -1,0 +1,19 @@
+﻿@model SurveyTask.Models.Survey
+
+@{
+    ViewBag.Title = "View Survey";
+}
+
+<h2>View Survey</h2>
+
+<h3>Title: @Model.Title</h3>
+
+<h4>Questions:</h4>
+<ul>
+    @foreach (var question in Model.Questions)
+    {
+        <li>@question.Text</li>
+    }
+</ul>
+
+@Html.ActionLink("Back to Previous Surveys", "Create", null, new { @class = "btn btn-primary" })
