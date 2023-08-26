@@ -1,17 +1,19 @@
-﻿@model SurveyTask.Models.Survey
+﻿@model SurveyTask.Models.SubmittedSurvey
 
-<h2>@Model.Title</h2>
+<h2>@Model.Survey.Title</h2>
 
-@foreach (var question in Model.Questions)
-{
-    <h3>@question.Text</h3>
+<div id="questionsContainer">
+    @for (int i = 0; i < Model.Survey.Questions.Count; i++)
+    { var question = Model.Survey.Questions.ToArray()[i];
+        <ul class="form-group">
+            <li>
+                @question.Text
 
-    <ul>
-        @foreach (var answer in question.Answers)
-        {
-            <li>@answer.AnswerText</li>
-        }
-    </ul>
-
-    <hr />
-}
+                        <div>
+                            @{ string answer = Model.Answers.FirstOrDefault(x => x.QuestionId == question.QuestionId)?.AnswerText; }
+                            <textarea disabled class="form-control answer-text">@answer</textarea>
+                        </div>
+                    </li>
+        </ul>
+    }
+</div>

@@ -12,9 +12,6 @@ namespace SurveyTask.Models
         public string Text { get; set; }
         public Guid SurveyId { get; set; } // Foreign key to Survey
         public Survey Survey { get; set; }
-        public string AnswerText { get; set; }
-
-        public virtual ICollection<Answer> Answers { get; set; }
 
     }
 

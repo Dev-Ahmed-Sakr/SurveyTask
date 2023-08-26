@@ -176,7 +176,7 @@ public class SurveyController : Controller
     }
     public ActionResult UserSubmittedSurveys(int page = 1, int pageSize = 10)
     {
-        var submittedSurveys = _context.Surveys.Include("Questions").Where(survey => survey.IsSubmitted).OrderByDescending(s => s.SurveyId)
+        var submittedSurveys = _context.SubmittedSurvey.Include("Survey").OrderByDescending(s => s.SurveyId)
                      .Skip((page - 1) * pageSize)
                      .Take(pageSize)
                      .ToList();
@@ -193,9 +193,9 @@ public class SurveyController : Controller
 
     public ActionResult ViewSubmittedSurvey(Guid id)
     {
-        var survey = _context.Surveys
-            .Include(s => s.Questions.Select(q => q.Answers))
-            .FirstOrDefault(s => s.SurveyId == id && s.IsSubmitted);
+        var survey = _context.SubmittedSurvey
+            .Include(s => s.Survey.Questions).Include(s => s.Answers)
+            .FirstOrDefault(s => s.Id == id);
 
         if (survey == null)
         {
@@ -204,41 +204,38 @@ public class SurveyController : Controller
 
         return PartialView(survey);
     }
+
     [HttpPost]
-    public ActionResult EditSurvey(Survey model)
+    public ActionResult EditSurvey(SurveyQuestionsViewModel model)
     {
-        if (ModelState.IsValid)
+        try
         {
-            var surveyToUpdate = _context.Surveys
-                .Include("Questions")
-                .FirstOrDefault(s => s.SurveyId == model.SurveyId);
-
-            if (surveyToUpdate != null)
+            var survey = _context.Surveys.FirstOrDefault(x => x.SurveyId == model.SurveyId);
+            survey.Title = model.Title;
+            foreach (var question in model.Questions.Where(x => x.QuestionId != Guid.Empty))
             {
-                surveyToUpdate.Title = model.Title;
-
-                foreach (var question in model.Questions)
+                question.QuestionText = question.QuestionText;
+            }
+            foreach (var questionmodel in model.Questions.Where(x => x.QuestionId == Guid.Empty))
+            {
+                var question = new Question
                 {
-                    var existingQuestion = surveyToUpdate.Questions.FirstOrDefault(q => q.QuestionId == question.QuestionId);
-
-                    if (existingQuestion != null)
-                    {
-                        existingQuestion.Text = question.Text;
-                    }
-                }
-
-                _context.SaveChanges();
-
-                return RedirectToAction("Create");
+                    QuestionId = Guid.NewGuid(),
+                    Text = questionmodel.QuestionText,
+                    SurveyId = survey.SurveyId
+                };
+                survey.Questions.Add(question);
             }
-            else
-            {
-                ModelState.AddModelError("", "Survey not found.");
-            }
+            _context.SaveChanges();
+
+            return Json(new { success = true, error = "Success." });
         }
-
-        return View(model);
+        catch (Exception ex)
+        {
+            return Json(new { success = false, error = "Error submitting answers." });
+        }
     }
+
     public SurveyViewModel SelectSurvey(Guid id)
     {
         var survey = _context.Surveys.Include("Questions").SingleOrDefault(s => s.SurveyId == id);

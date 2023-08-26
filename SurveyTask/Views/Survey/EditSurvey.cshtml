@@ -9,9 +9,10 @@
 @using (Html.BeginForm("EditSurvey", "Survey", FormMethod.Post, new { id="EditForm" }))
 {
     <div class="form-group">
+        <input hidden id="SurveyId" value="@Model.SurveyId"/>
         @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control", id = "surveyTitle" } })
         </div>
     </div>
 
@@ -21,7 +22,7 @@
         {
             <div class="form-group">
                 <label class="control-label">Question @i</label>
-                @Html.TextBoxFor(model => model.Questions.ToList()[i].Text, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.Questions.ToList()[i].Text, new { @class = "form-control qustion-text", id= Model.Questions.ToList()[i].QuestionId })
                 @Html.ValidationMessageFor(model => model.Questions.ToList()[i].Text, "", new { @class = "text-danger" })
 
             </div>
@@ -33,12 +34,11 @@
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" value="Save Changes" class="btn btn-default" />
-            @Html.ActionLink("Cancel", "ViewSurvey", new { SurveyId = Model.SurveyId }, new { @class = "btn btn-danger" })
         </div>
     </div>
 }
 
-    <script>
+<script>
         $(document).ready(function () {
             var questionIndex = 0;
 
@@ -57,27 +57,34 @@
 
             $("#EditForm").submit(function (e) {
                 e.preventDefault();
-                var isValid = true;
-                $("input[type='text'][name^='Questions']").each(function () {
-                    if ($(this).val().trim() === "") {
-                        isValid = false;
-                        var fieldName = $(this).attr("name");
-                        $("span[data-valmsg-for='" + fieldName + "']").text("Question text is required.");
-                    }
+                    var answers = [];
+                $(".qustion-text").each(function () {
+                    var questionId = $(this).attr('id');
+                    var questionText = $(this).val();
+                    answers.push({ QuestionId: questionId, QuestionText: questionText });
                 });
-
-                let data = { "" : Model };
-
+                debugger
+                let answersList = JSON.stringify({ model: { SurveyId: $('#SurveyId').val(), Title: $('#surveyTitle').val(), Questions : answers } });
                 $.ajax({
-                    url: '/Survey/Create',
-                    type: 'post',
-                    data: data,
-                    async: false,
-                    success: (template) => {
-                        // debugger;
+                    type: "POST",
+                    url: "@Url.Action("EditSurvey", "Survey")",
+                    data: answersList,
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        if (data.success) {
+                            alert("Survey successfully.");
+                        } else {
+                            alert("Error submitting survey.");
+                            console.log("Error submitting survey. Errors: " + data.errors.join(", "));
+                        }
+                    },
+                    error: function () {
+
+                        console.log("Error submitting survey.");
                     }
-                });
-                return isValid;
+               });
             });
+
+
         });
-    </script>
+</script>

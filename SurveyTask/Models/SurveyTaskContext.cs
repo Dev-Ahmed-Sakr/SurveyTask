@@ -18,11 +18,6 @@ namespace SurveyTask.Models
                 .HasRequired(q => q.Survey)
                 .WithMany(s => s.Questions)
                 .HasForeignKey(q => q.SurveyId);
-
-            modelBuilder.Entity<Answer>()
-                .HasRequired(a => a.Question)
-                .WithMany(q => q.Answers)
-                .HasForeignKey(a => a.QuestionId);
         }
 
         public static SurveyTaskContext Create()
@@ -30,6 +25,7 @@ namespace SurveyTask.Models
             return new SurveyTaskContext();
         }
         public DbSet<Survey> Surveys { get; set; }
+        public DbSet<SubmittedSurvey> SubmittedSurvey { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<Answer> Answers { get; set; }
 

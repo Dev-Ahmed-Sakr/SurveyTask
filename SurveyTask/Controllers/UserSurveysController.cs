@@ -31,42 +31,32 @@ namespace SurveyTask.Controllers
         }
 
         [HttpPost]
-        public ActionResult AnswerSurvey(Survey model)
-        {
-            foreach (var question in model.Questions)
-            {
-                var textAnswer = new Answer
-                {
-                    QuestionId = question.QuestionId,
-                    AnswerText = question.AnswerText
-                };
-                _context.Answers.Add(textAnswer);
-
-            }
-            _context.SaveChanges();
-
-            return RedirectToAction("Index", "UserSurveys");
-        }
-        [HttpPost]
-        public ActionResult SubmitAnswers(List<AnswerViewModel> answers,Guid SurveyId)
+        public ActionResult SubmitAnswers(SurveyAnswerViewModel model)
         {
             try
             {
-                var surveyQuestions = _context.Surveys.Where(s=>s.SurveyId == SurveyId);
-                foreach (var answer in answers)
+                var answers = new List<Answer>();
+                SubmittedSurvey submittedSurvey = new SubmittedSurvey()
                 {
-                    var question = _context.Questions.FirstOrDefault(q => q.QuestionId == answer.QuestionId);
-
-                    if (question != null)
+                    Id = Guid.NewGuid(),
+                    SurveyId = model.SurveyId,
+                };
+                foreach (var answer in model.Answers)
+                {
+                    // Update the answer text for the questi
+                    var textAnswer = new Answer
                     {
-                        // Update the answer text for the question
-                        question.AnswerText = answer.AnswerText;
-                    }
+                        AnswerId = Guid.NewGuid(),
+                        QuestionId = answer.QuestionId,
+                        AnswerText = answer.AnswerText,
+                    };
+                    answers.Add(textAnswer);
                 }
-
+                submittedSurvey.Answers = answers;
+                _context.SubmittedSurvey.Add(submittedSurvey);
                 _context.SaveChanges();
 
-                return Json(new { success = true });
+                return Json(new { success = true, error = "Success." });
             }
             catch (Exception ex)
             {
