@@ -12,7 +12,7 @@ namespace SurveyTask.Models
         {
             CreatedDate = DateTime.Now;
         }
-        public Guid Id { get; set; }
+        public Guid SurveyId { get; set; }
         [Required]
         public string Title { get; set; }
         public DateTime CreatedDate { get; set; }

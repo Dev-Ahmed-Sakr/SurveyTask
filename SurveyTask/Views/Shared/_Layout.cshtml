@@ -28,21 +28,30 @@
 </head>
 <body>
     <div class="wrapper">
-        <div class="sidebar" data-color="purple" data-background-color="white">
             <!--
-                Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
 
-                Tip 2: you can also add an image using data-image tag
-            -->
-            <div class="logo" style="text-align:center;">
-                <a target="_blank">Admin Portal</a>
+        Tip 2: you can also add an image using data-image tag
+    -->
+            @if (Request.IsAuthenticated)
+            {
+            <div class="sidebar" data-color="purple" data-background-color="white">
+                <div class="logo" style="text-align:center;">
+                    <a target="_blank">Admin Portal</a>
+                </div>
+                <div class="sidebar-wrapper">
+                    <ul class="nav" style="text-align:center;">
+                        <li style="margin:auto">
+                            <a href="@Url.Action("UserSubmittedSurveys","Survey")">
+                            Submitted Surveys</a>
+                        </li>
+                        <li style="margin:auto">
+                            <a href="@Url.Action("ManageSurvey","Survey")">
+                            Manage New Surveys</a></li>
+                    </ul>
+                </div>
             </div>
-            <div class="sidebar-wrapper">
-                <ul class="nav" style="text-align:center;">
-                    <li style="margin:auto">Survey</li>
-                </ul>
-            </div>
-        </div>
+            }
         <div class="main-panel">
             <!-- Navbar -->
 
@@ -69,10 +78,15 @@
                                     </p>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">
-                                    @*<a class="dropdown-item" href="#">Profile</a>
-                                        <a class="dropdown-item" href="#">Settings</a>
-                                        <div class="dropdown-divider"></div>*@
-                                    <a class="dropdown-item" asp-controller="Account" asp-action="LogOut">Log out</a>
+                                    @if (Request.IsAuthenticated)
+                                    {
+                                        @Html.ActionLink("Log out", "LogOff", "Account", routeValues: null, htmlAttributes: new { id = "logoutLink", @class = "nav-link" })
+                                    }
+                                    else
+                                    {
+                                        @Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", @class = "nav-link" })
+
+                                    }
                                 </div>
                             </li>
                         </ul>

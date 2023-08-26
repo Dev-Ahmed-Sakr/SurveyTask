@@ -6,7 +6,7 @@
 
 <h2>Edit Survey</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("EditSurvey", "Survey", FormMethod.Post, new { id="EditForm" }))
 {
     <div class="form-group">
         @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -16,7 +16,7 @@
     </div>
 
     <h3>Edit Questions</h3>
-    <div id="questionsContainer">
+    <div id="questionsContainerEdit">
         @for (int i = 0; i < Model.Questions.Count; i++)
         {
             <div class="form-group">
@@ -28,22 +28,22 @@
         }
     </div>
 
-    <button type="button" id="addQuestion" class="btn btn-primary">Add Another Question</button>
+    <button type="button" id="addQuestionEdit" class="btn btn-primary">Add Another Question</button>
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" value="Save Changes" class="btn btn-default" />
-            @Html.ActionLink("Cancel", "ViewSurvey", new { id = Model.Id }, new { @class = "btn btn-danger" })
+            @Html.ActionLink("Cancel", "ViewSurvey", new { SurveyId = Model.SurveyId }, new { @class = "btn btn-danger" })
         </div>
     </div>
 }
 
-@section Scripts {
     <script>
         $(document).ready(function () {
             var questionIndex = 0;
 
-            $("#addQuestion").click(function () {
+            $("#addQuestionEdit").click(function () {
+
                 var questionHtml = `
                     <div class="form-group">
                         <label class="control-label">Question ${questionIndex}</label>
@@ -51,11 +51,12 @@
                         <span class="text-danger" data-valmsg-for="Questions[${questionIndex}].Text"></span>
                     </div>`;
 
-                $("#questionsContainer").append(questionHtml);
+                $("#questionsContainerEdit").append(questionHtml);
                 questionIndex++;
             });
 
-            $("form").submit(function () {
+            $("#EditForm").submit(function (e) {
+                e.preventDefault();
                 var isValid = true;
                 $("input[type='text'][name^='Questions']").each(function () {
                     if ($(this).val().trim() === "") {
@@ -65,8 +66,18 @@
                     }
                 });
 
+                let data = { "" : Model };
+
+                $.ajax({
+                    url: '/Survey/Create',
+                    type: 'post',
+                    data: data,
+                    async: false,
+                    success: (template) => {
+                        // debugger;
+                    }
+                });
                 return isValid;
             });
         });
     </script>
-}

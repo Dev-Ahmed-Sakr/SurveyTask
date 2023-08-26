@@ -3,7 +3,7 @@
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class createDB : DbMigration
+    public partial class createdb : DbMigration
     {
         public override void Up()
         {
@@ -11,11 +11,11 @@
                 "dbo.Answer",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
-                        QuestionId = c.Int(nullable: false),
+                        AnswerId = c.Guid(nullable: false),
+                        QuestionId = c.Guid(nullable: false),
                         AnswerText = c.String(),
                     })
-                .PrimaryKey(t => t.Id)
+                .PrimaryKey(t => t.AnswerId)
                 .ForeignKey("dbo.Question", t => t.QuestionId, cascadeDelete: true)
                 .Index(t => t.QuestionId);
             
@@ -23,12 +23,12 @@
                 "dbo.Question",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        QuestionId = c.Guid(nullable: false),
                         Text = c.String(),
                         SurveyId = c.Guid(nullable: false),
                         AnswerText = c.String(),
                     })
-                .PrimaryKey(t => t.Id)
+                .PrimaryKey(t => t.QuestionId)
                 .ForeignKey("dbo.Survey", t => t.SurveyId, cascadeDelete: true)
                 .Index(t => t.SurveyId);
             
@@ -36,12 +36,12 @@
                 "dbo.Survey",
                 c => new
                     {
-                        Id = c.Guid(nullable: false),
+                        SurveyId = c.Guid(nullable: false),
                         Title = c.String(),
                         CreatedDate = c.DateTime(nullable: false),
                         IsSubmitted = c.Boolean(nullable: false),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.SurveyId);
             
             CreateTable(
                 "dbo.AspNetRoles",

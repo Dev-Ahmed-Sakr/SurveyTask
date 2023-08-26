@@ -6,64 +6,70 @@
 
 <h2>@Model.Title</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("AnswerSurvey", "UserSurveys", FormMethod.Post))
 {
+    @Html.HiddenFor(model => model.SurveyId) <!-- Include the survey's ID -->
+
     <h3>Questions</h3>
     <div id="questionsContainer">
-        @foreach (var question in Model.Questions.ToList())
+        @for (int i = 0; i < Model.Questions.Count; i++)
         {
             <div class="form-group">
                 <label class="control-label">Question</label>
-                @Html.HiddenFor(model => question.Id)
-                @Html.DisplayFor(model => question.Text)
+                @Html.HiddenFor(model => model.Questions.ToArray()[i].QuestionId)
+                @Html.HiddenFor(model => model.Questions.ToArray()[i].Text)
+
+                @Html.DisplayFor(model => model.Questions.ToArray()[i].Text)
             </div>
             <div>
-                @Html.TextAreaFor(model => question.AnswerText, new { @class = "form-control" })
-                <span id="answerTextValidation@(question.Id)" class="text-danger"></span>
+                @Html.TextAreaFor(model => model.Questions.ToArray()[i].AnswerText, new { @class = "form-control answer-text" })
+                <span id="answerTextValidation@(Model.Questions.ToArray()[i].QuestionId)" class="text-danger"></span>
             </div>
         }
     </div>
+    <button id="btnSubmitAnswers" class="btn btn-primary">Submit Answers</button>
 
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <button id="btnSubmitAnswers" class="btn btn-primary"><i class="fa fa-save"></i> Create Survey</button>
-        </div>
-    </div>
 }
+
+
 
 @section Scripts {
     <script>
         $(document).ready(function () {
 
-            $('#btnSubmitAnswers').click((event) => {
+            $("#btnSubmitAnswers").click(function () {
+
                 debugger;
-                var hasError = false;
-                $("textarea[id^='answerText']").each(function (index) {
-                    var answerText = $(this).val().trim();
-                    var questionId = $(this).attr("id").replace("answerText", "");
+                    var answers = [];
+                    $(".answer-text").each(function () {
+                        var questionId = $(this).siblings("input[type='hidden']").val();
+                        var answerText = $(this).val();
+                        answers.push({ QuestionId: questionId, AnswerText: answerText });
+                    });
 
-                    if (answerText == '') {
-                        $("#answerTextValidation" + questionId).text("Answer is required.");
-                        hasError = true;
-                    } else {
-                        $("#answerTextValidation" + questionId).text("");
-                    }
-                });
+                             let answersList = JSON.stringify({ answers: answers });
+                             let data = { answers: answersList, SurveyId : $('#SurveyId').val() }
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("SubmitAnswers", "UserSurveys")",
+                        data: data,
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            if (data.success) {
 
-                if (hasError) { event.preventDefault(); return; }
+                                 console.log("Answers submitted successfully.");
+                            } else {
 
-                let data = { Model };
+                                console.log("Error submitting answers. Errors: " + data.errors.join(", "));
+                            }
+                        },
+                        error: function () {
 
-                $.ajax({
-                    url: '/Survey/Create',
-                    type: 'post',
-                    data,
-                    async: false,
-                    success: (template) => {
-                        // debugger;
-                    }
-                });
+                            console.log("Error submitting answers.");
+                        }
+               });
             });
+
         });
 
 

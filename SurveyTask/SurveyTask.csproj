@@ -182,13 +182,14 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202308252223587_createDB.cs" />
-    <Compile Include="Migrations\202308252223587_createDB.designer.cs">
-      <DependentUpon>202308252223587_createDB.cs</DependentUpon>
+    <Compile Include="Migrations\202308260122523_createdb.cs" />
+    <Compile Include="Migrations\202308260122523_createdb.designer.cs">
+      <DependentUpon>202308260122523_createdb.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Answer.cs" />
+    <Compile Include="Models\AnswerViewModel.cs" />
     <Compile Include="Models\QuestionViewModel.cs" />
     <Compile Include="Models\SurveyTaskContext.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -872,8 +873,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202308252223587_createDB.resx">
-      <DependentUpon>202308252223587_createDB.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202308260122523_createdb.resx">
+      <DependentUpon>202308260122523_createdb.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

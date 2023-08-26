@@ -10,7 +10,24 @@
     @foreach (var survey in Model)
     {
         <li>
-            @Html.ActionLink(survey.Title, "AnswerSurvey", new { id = survey.Id }, new { @class = "btn btn-primary btn-sm" })
+            @Html.ActionLink(survey.Title, "AnswerSurvey", new { SurveyId = survey.SurveyId }, new { @class = "btn btn-primary btn-sm" })
         </li>
     }
 </ul>
+<div class="modal fade" id="AnswerSurveyModal" tabindex="-1" role="dialog" aria-labelledby="ViewSurveyModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ViewSurveyModalLabel">View Survey</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="answersurvey">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
+        </div>
+    </div>
+</div>

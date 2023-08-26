@@ -22,7 +22,7 @@ public class SurveyController : Controller
     //}
     public ActionResult ManageSurvey(int page = 1, int pageSize = 10)
     {
-        var surveys = _context.Surveys.Include("Questions").Where(survey => !survey.IsSubmitted).OrderByDescending(s => s.Id)
+        var surveys = _context.Surveys.Include("Questions").Where(survey => !survey.IsSubmitted).OrderByDescending(s => s.SurveyId)
                              .Skip((page - 1) * pageSize)
                              .Take(pageSize)
                              .ToList();
@@ -69,7 +69,7 @@ public class SurveyController : Controller
                     
                     var newSurvey = new Survey
                     {
-                        Id = Guid.NewGuid(),
+                        SurveyId = Guid.NewGuid(),
                         Title = surveyData.Title,
                     };
 
@@ -77,7 +77,8 @@ public class SurveyController : Controller
                     {
                         var newQuestion = new Question
                         {
-                            SurveyId = newSurvey.Id,
+                            QuestionId = Guid.NewGuid() ,
+                            SurveyId = newSurvey.SurveyId,
                             Text = questionData.Text,
                         };
 
@@ -87,7 +88,7 @@ public class SurveyController : Controller
                     _context.Surveys.Add(newSurvey);
                     _context.SaveChanges();
 
-                    return Json(new { success = true, surveyId = newSurvey.Id });
+                    return Json(new { success = true, surveyId = newSurvey.SurveyId });
                 }
                 else
                 {
@@ -109,7 +110,7 @@ public class SurveyController : Controller
 
     public ActionResult ViewSurvey(Guid id)
     {
-        var survey = _context.Surveys.Include("Questions").SingleOrDefault(s => s.Id == id);
+        var survey = _context.Surveys.Include("Questions").SingleOrDefault(s => s.SurveyId == id);
         if (survey == null)
         {
             return HttpNotFound();
@@ -126,7 +127,7 @@ public class SurveyController : Controller
             return HttpNotFound();
         }
 
-        return View(survey);
+        return PartialView(survey);
     }
     [HttpPost]
     public ActionResult EditSurvey(SurveyViewModel model)
@@ -135,7 +136,7 @@ public class SurveyController : Controller
         {
             var surveyToUpdate = _context.Surveys
                 .Include(s => s.Questions)
-                .FirstOrDefault(s => s.Id == model.Id);
+                .FirstOrDefault(s => s.SurveyId == model.SurveyId);
 
             if (surveyToUpdate != null)
             {
@@ -143,7 +144,7 @@ public class SurveyController : Controller
 
                 foreach (var question in model.Questions)
                 {
-                    var existingQuestion = surveyToUpdate.Questions.FirstOrDefault(q => q.Id == question.Id);
+                    var existingQuestion = surveyToUpdate.Questions.FirstOrDefault(q => q.QuestionId == question.QuestionId);
 
                     if (existingQuestion != null)
                     {
@@ -175,7 +176,7 @@ public class SurveyController : Controller
     }
     public ActionResult UserSubmittedSurveys(int page = 1, int pageSize = 10)
     {
-        var submittedSurveys = _context.Surveys.Include("Questions").Where(survey => survey.IsSubmitted).OrderByDescending(s => s.Id)
+        var submittedSurveys = _context.Surveys.Include("Questions").Where(survey => survey.IsSubmitted).OrderByDescending(s => s.SurveyId)
                      .Skip((page - 1) * pageSize)
                      .Take(pageSize)
                      .ToList();
@@ -194,19 +195,54 @@ public class SurveyController : Controller
     {
         var survey = _context.Surveys
             .Include(s => s.Questions.Select(q => q.Answers))
-            .FirstOrDefault(s => s.Id == id && s.IsSubmitted);
+            .FirstOrDefault(s => s.SurveyId == id && s.IsSubmitted);
 
         if (survey == null)
         {
             return HttpNotFound();
         }
 
-        return View(survey);
+        return PartialView(survey);
+    }
+    [HttpPost]
+    public ActionResult EditSurvey(Survey model)
+    {
+        if (ModelState.IsValid)
+        {
+            var surveyToUpdate = _context.Surveys
+                .Include("Questions")
+                .FirstOrDefault(s => s.SurveyId == model.SurveyId);
+
+            if (surveyToUpdate != null)
+            {
+                surveyToUpdate.Title = model.Title;
+
+                foreach (var question in model.Questions)
+                {
+                    var existingQuestion = surveyToUpdate.Questions.FirstOrDefault(q => q.QuestionId == question.QuestionId);
+
+                    if (existingQuestion != null)
+                    {
+                        existingQuestion.Text = question.Text;
+                    }
+                }
+
+                _context.SaveChanges();
+
+                return RedirectToAction("Create");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Survey not found.");
+            }
+        }
+
+        return View(model);
     }
     public SurveyViewModel SelectSurvey(Guid id)
     {
-        var survey = _context.Surveys.Include("Questions").SingleOrDefault(s => s.Id == id);
+        var survey = _context.Surveys.Include("Questions").SingleOrDefault(s => s.SurveyId == id);
         if (survey == null) return null;
-        return new SurveyViewModel { Id=survey.Id,IsSubmitted = survey.IsSubmitted,Questions = survey.Questions,Title = survey.Title };
+        return new SurveyViewModel { SurveyId = survey.SurveyId, IsSubmitted = survey.IsSubmitted,Questions = survey.Questions,Title = survey.Title };
     }
 }

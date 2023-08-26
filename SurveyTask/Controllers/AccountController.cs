@@ -83,15 +83,8 @@ namespace SurveyTask.Controllers
                         var user = await UserManager.FindByEmailAsync(model.Email);
                         var roles = await UserManager.GetRolesAsync(user.Id);
 
-                        if (roles.Contains("Admin"))
-                        {
-                            return RedirectToAction("ManageSurvey", "Survey");
-                        }
-                        else
-                        {
-                            return RedirectToAction("UserDashboard", "UserSurveys");
-                        }
-
+                        return RedirectToAction("ManageSurvey", "Survey");
+                        
                     }
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -177,7 +170,7 @@ namespace SurveyTask.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("ManageSurvey", "Survey");
                 }
                 AddErrors(result);
             }
@@ -401,8 +394,7 @@ namespace SurveyTask.Controllers
 
         //
         // POST: /Account/LogOff
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpGet]
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);

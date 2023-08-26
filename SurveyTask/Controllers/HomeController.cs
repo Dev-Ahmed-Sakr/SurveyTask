@@ -10,7 +10,7 @@ namespace SurveyTask.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "UserSurveys");
         }
 
         public ActionResult About()

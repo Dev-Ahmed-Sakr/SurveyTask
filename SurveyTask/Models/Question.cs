@@ -8,7 +8,7 @@ namespace SurveyTask.Models
 {
     public class Question
     {
-        public int Id { get; set; }
+        public Guid QuestionId { get; set; }
         public string Text { get; set; }
         public Guid SurveyId { get; set; } // Foreign key to Survey
         public Survey Survey { get; set; }

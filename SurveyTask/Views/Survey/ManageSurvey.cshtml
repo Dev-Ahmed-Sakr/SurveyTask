@@ -78,7 +78,7 @@
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-4">
                     <div class="form-group pull-right">
-                        <button hidden id="btnCreate" class="btn btn-primary"><i class="fa fa-save"></i> Create Survey</button>
+                        <button hidden id="btnCreate" type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Create Survey</button>
                     </div>
                 </div>
             </div>
@@ -107,8 +107,8 @@
                                 <td>@survey.Questions.Count</td>
                                 <td>@survey.CreatedDate</td>
                                 <td>
-                                    @Html.ActionLink("View", "ViewSurvey", new { id = survey.Id }, new { @class = "btn btn-primary btn-sm" })
-                                    @Html.ActionLink("Edit", "EditSurvey", new { id = survey.Id }, new { @class = "btn btn-warning btn-sm" })
+                                    <button type="button" class="btn btn-sm btn-round btn-twitter viewSurveyButton" id="@survey.SurveyId"><span class="glyphicon glyphicon-ok"></span>View</button>
+                                    <button type="button" class="btn btn-sm btn-round btn-warning editSurveyButton" id="@survey.SurveyId"><span class="glyphicon glyphicon-ok"></span>Edit</button>
                                 </td>
                             </tr>
                         }
@@ -129,9 +129,75 @@
         </div>
     </div>
 }
+
+<div class="modal fade" id="ViewSurveyModal" tabindex="-1" role="dialog" aria-labelledby="ViewSurveyModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ViewSurveyModalLabel">View Survey</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="surveyDetails">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="EditSurveyModal" tabindex="-1" role="dialog" aria-labelledby="EditSurveyModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="EditSurveyModalLabel">Edit Survey</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="surveyEdit">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
+        </div>
+    </div>
+</div>
+</div>
+
 @section Scripts {
     <script>
+        $('.viewSurveyButton').click(function (e) {
+            let id = $(this).attr('id');
+            $.ajax({
+                url: '/Survey/ViewSurvey/' + id,
+                type: 'get',
+                async: false,
+                success: (template) => {
+                    $('#surveyDetails').html(template);
+                    $('#ViewSurveyModal').modal('toggle');
+                }
+            });
+        });
+
+        $('.editSurveyButton').click(function (e) {
+            let id = $(this).attr('id');
+            $.ajax({
+                url: '/Survey/EditSurvey/' + id,
+                type: 'get',
+                async: false,
+                success: (template) => {
+                    $('#surveyEdit').html(template);
+                    $('#EditSurveyModal').modal('toggle');
+                }
+            });
+        });
+
         $(document).ready(function () {
+
+
             var questionIndex = 0;
 
             $("#addQuestion").click(function () {
@@ -216,4 +282,6 @@
 
 
     </script>
+
+
 }

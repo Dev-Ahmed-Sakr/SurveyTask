@@ -5,12 +5,13 @@ using System.Web;
 
 namespace SurveyTask.Models
 {
-    public class Answer
+    public class QuestionDto
     {
-        public Guid AnswerId { get; set; }
-        public Guid QuestionId { get; set; }
+        public int Id { get; set; }
+        public int SurveyTitle { get; set; } 
+        public int SurveyId { get; set; } 
         public string AnswerText { get; set; }
 
-        public virtual Question Question { get; set; }
     }
+
 }

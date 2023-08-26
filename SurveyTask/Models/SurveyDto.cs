@@ -5,18 +5,17 @@ using System.Web;
 
 namespace SurveyTask.Models
 {
-    public class Survey
+    public class SurveyDto
     {
-        public Survey() 
+        public SurveyDto() 
         { 
            CreatedDate = DateTime.Now;
             Questions = new List<Question>();
         }
-        public Guid SurveyId { get; set; }
+        public Guid Id { get; set; }
         public string Title { get; set; }
         public DateTime CreatedDate { get; set; }
-        public bool IsSubmitted { get; set; }
-        public ICollection<Question> Questions { get; set; }
+        public List<Question> Questions { get; set; }
     }
 
 
